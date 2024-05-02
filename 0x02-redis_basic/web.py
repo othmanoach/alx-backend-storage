@@ -15,9 +15,12 @@ def get_page(url: str) -> str:
     redis_store = redis.Redis()
     res_key = 'result:{}'.format(url)
     req_key = 'count:{}'.format(url)
+    
+    # Increment the count key every time get_page is called
+    redis_store.incr(req_key)
+    
     result = redis_store.get(res_key)
     if result is not None:
-        redis_store.incr(req_key)
         return result
     result = requests.get(url).content.decode('utf-8')
     redis_store.setex(res_key, timedelta(seconds=10), result)
