@@ -3,7 +3,6 @@
 '''
 import redis
 import requests
-from datetime import timedelta
 
 
 def get_page(url: str) -> str:
@@ -20,5 +19,5 @@ def get_page(url: str) -> str:
         redis_store.incr(req_key)
         return result
     result = requests.get(url).content.decode('utf-8')
-    redis_store.setex(res_key, timedelta(seconds=10), result)
+    redis_store.setex(res_key, 10, result)  # Set expiration time directly in seconds
     return result
